@@ -1,12 +1,9 @@
 (ns tnetstring.core
   (:use [clojure.string :only [split]]))
 
-;(let [length-str (first (re-seq [#"\d+" str]))]
-;   [length-str-length (.length length-str)]
-;  (Integer/parseInt length-str)))
-
 (def parsers
   { \# #(Integer/parseInt %)
+    \^ #(Float/parseFloat %)
     \' #(identity %)})
 
 (defn- parse-length [str]
@@ -25,3 +22,4 @@
   [str]
   (let [[payload-len payload-str] (parse-length str)]
     (payload payload-str payload-len)))
+
