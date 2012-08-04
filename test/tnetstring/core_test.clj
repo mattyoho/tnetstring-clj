@@ -24,6 +24,8 @@
     (is (thrown? IllegalArgumentException (parse "1:n~")))))
 
 (deftest parse-list
+  (testing "Parsing an empty list"
+    (is (= [[] ""] (parse "0:]"))))
   (testing "Parsing a list of elements"
     (is (= [[12345 67890 "xxxxx"] ""] (parse "24:5:12345#5:67890#5:xxxxx,]")))))
 
