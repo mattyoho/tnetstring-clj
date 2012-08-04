@@ -9,8 +9,15 @@
       (recur str (conj the-list element)))
     the-list))
 
+(defn- parse-dict [str dict]
+  (if (not (blank? str))
+    (let [[key value-and-rest] (parse str)]
+      (let [[value str] (parse value-and-rest)]
+        (recur str (assoc dict key value))))
+    dict))
+
 (def parsers
-  { \# #(Integer/parseInt %)
+  { \# #(Long/parseLong %)
     \^ #(Float/parseFloat %)
     \! (fn [s] (if (or (= "true" s) (= "false" s))
                        (Boolean/valueOf s)
@@ -18,7 +25,8 @@
     \~ (fn [s] (if (not (blank? s))
            (throw (IllegalArgumentException. "Nil does not have a body"))))
     \, #(identity %)
-    \] #(parse-list % [])})
+    \] #(parse-list % [])
+    \} #(parse-dict % {})})
 
 (defn- parse-length [str]
   (let [[length-str remain] (split str #":" 2)]

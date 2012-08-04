@@ -29,6 +29,12 @@
   (testing "Parsing a list of elements"
     (is (= [[12345 67890 "xxxxx"] ""] (parse "24:5:12345#5:67890#5:xxxxx,]")))))
 
+(deftest parse-dict
+  (testing "Parsing an empty dictionary"
+    (is (= [{} ""] (parse "0:}"))))
+  (testing "Parsing a dictionary of string keys and assorted values"
+    (is (= [{"hello" [12345678901 "this"]} ""] (parse "34:5:hello,22:11:12345678901#4:this,]}")))))
+
 (deftest parse-a-string
   (testing "Parsing an empty string"
     (is (= ["", ""] (parse "0:,"))))
