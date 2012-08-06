@@ -18,7 +18,7 @@
 
 (def parsers
   { \# #(Long/parseLong %)
-    \^ #(Float/parseFloat %)
+    \^ #(Double/parseDouble %)
     \! (fn [s] (if (or (= "true" s) (= "false" s))
                        (Boolean/valueOf s)
                        (throw (IllegalArgumentException. "Not a boolean"))))

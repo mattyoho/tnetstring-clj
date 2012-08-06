@@ -9,8 +9,8 @@
 
 (deftest parse-a-float
   (testing "Parsing a floating point number (Who says you can't compare floats for equality?)"
-    (is (= [(float 2.5), ""] (parse "3:2.5^")))
-    (is (= [(float 3.14), ""] (parse "4:3.14^")))))
+    (is (= [(double 2.5), ""] (parse "3:2.5^")))
+    (is (= [(double 3.14), ""] (parse "4:3.14^")))))
 
 (deftest parse-booleans
   (testing "Parsing a boolean value"
