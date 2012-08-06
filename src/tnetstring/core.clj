@@ -16,7 +16,11 @@
         (recur str (assoc dict key value))))
     dict))
 
-(def parsers
+(defn- parse-length [str]
+  (let [[length-str remain] (split str #":" 2)]
+    [(Integer/parseInt length-str) remain]))
+
+(let [parsers
   { \# #(Long/parseLong %)
     \^ #(Double/parseDouble %)
     \! (fn [s] (if (or (= "true" s) (= "false" s))
@@ -26,18 +30,14 @@
            (throw (IllegalArgumentException. "Nil does not have a body"))))
     \, #(identity %)
     \] #(parse-list % [])
-    \} #(parse-dict % {})})
+    \} #(parse-dict % {})}]
 
-(defn- parse-length [str]
-  (let [[length-str remain] (split str #":" 2)]
-    [(Integer/parseInt length-str) remain]))
-
-(defn- payload [str len]
-    (let [payload-str  (.substring str 0 len)
-          remain       (subs str (+ 1 len))
-          payload-type (.charAt str len)
-          parser       (fn [] (get parsers payload-type))]
-      [((parser) payload-str), remain]))
+    (defn- payload [str len]
+        (let [payload-str  (.substring str 0 len)
+              remain       (subs str (+ 1 len))
+              payload-type (.charAt str len)
+              parser       (fn [] (get parsers payload-type))]
+          [((parser) payload-str), remain])))
 
 (defn parse
   "Parses a tnetstring"
