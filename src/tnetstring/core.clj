@@ -3,21 +3,21 @@
 
 (declare parse)
 
-(defn- parse-list [str the-list]
-  (if (not (blank? str))
-    (let [[element str] (parse str)]
-      (recur str (conj the-list element)))
+(defn- parse-list [s the-list]
+  (if (not (blank? s))
+    (let [[element s] (parse s)]
+      (recur s (conj the-list element)))
     the-list))
 
-(defn- parse-dict [str dict]
-  (if (not (blank? str))
-    (let [[key value-and-rest] (parse str)]
-      (let [[value str] (parse value-and-rest)]
-        (recur str (assoc dict key value))))
+(defn- parse-dict [s dict]
+  (if (not (blank? s))
+    (let [[key value-and-rest] (parse s)]
+      (let [[value s] (parse value-and-rest)]
+        (recur s (assoc dict key value))))
     dict))
 
-(defn- parse-length [str]
-  (let [[length-str remain] (split str #":" 2)]
+(defn- parse-length [s]
+  (let [[length-str remain] (split s #":" 2)]
     [(Integer/parseInt length-str) remain]))
 
 (let [parsers
@@ -32,16 +32,16 @@
     \] #(parse-list % [])
     \} #(parse-dict % {})}]
 
-    (defn- payload [str len]
-        (let [payload-str  (.substring str 0 len)
-              remain       (subs str (+ 1 len))
-              payload-type (.charAt str len)
+    (defn- payload [s len]
+        (let [payload-str  (.substring s 0 len)
+              remain       (subs s (+ 1 len))
+              payload-type (.charAt s len)
               parser       (fn [] (get parsers payload-type))]
           [((parser) payload-str), remain])))
 
 (defn parse
   "Parses a tnetstring"
-  [str]
-  (let [[payload-len payload-str] (parse-length str)]
+  [s]
+  (let [[payload-len payload-str] (parse-length s)]
     (payload payload-str payload-len)))
 
